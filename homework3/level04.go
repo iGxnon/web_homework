@@ -1,11 +1,11 @@
-package main
+package homework3
 
 import (
 	"fmt"
 	"sort"
 )
 
-func main() {
+func Level04() {
 	a := []int{20, 1, 45, 123, 3, -30, 45, 31}
 
 	// 函数式编程

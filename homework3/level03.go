@@ -1,12 +1,12 @@
-package main
+package homework3
 
 import "fmt"
 
-//func main() {
-//	Receiver(true)
-//	Receiver("Hi")
-//	Receiver(19)
-//}
+func Level03() {
+	Receiver(true)
+	Receiver("Hi")
+	Receiver(19)
+}
 
 // 所有类型都可以看作是空接口的实现
 func Receiver(v interface{}) {

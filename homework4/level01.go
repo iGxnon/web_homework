@@ -1,4 +1,4 @@
-package main
+package homework4
 
 import "fmt"
 
@@ -19,18 +19,18 @@ func add(identifier string, ch chan int) {
 	ch <- flag
 }
 
-// 两个goroutine同时抢一个channel,先抢到的先运行完毕再往channel里写数据让另一个接收去运行
+//两个goroutine同时抢一个channel,先抢到的先运行完毕再往channel里写数据让另一个接收去运行
 
-//func main() {
-//
-//	ch := make(chan int)
-//	go add("goroutine-1 add 1 to x", ch)
-//	go add("goroutine-2 add 1 to x", ch)
-//	ch <- flag
-//	// 循环同步
-//	for <-ch != 2 {
-//
-//	}
-//	fmt.Println(x)
-//
-//}
+func Level01() {
+
+	ch := make(chan int)
+	go add("goroutine-1 add 1 to x", ch)
+	go add("goroutine-2 add 1 to x", ch)
+	ch <- flag
+	// 循环同步
+	for <-ch != 2 {
+
+	}
+	fmt.Println(x)
+
+}

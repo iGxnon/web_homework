@@ -1,8 +1,8 @@
-package main
+package homework2
 
 import "fmt"
 
-func main() {
+func Level02() {
 	var x, y float32
 	var op string
 	for {
@@ -12,16 +12,16 @@ func main() {
 			return
 		}
 		switch op {
-			case "+":
-				fmt.Println(x + y)
-			case "-":
-				fmt.Println(x - y)
-			case "*":
-				fmt.Println(x * y)
-			case "/":
-				fmt.Println(x / y)
-			default:
-				panic("你输入的你马呢?")
-			}
+		case "+":
+			fmt.Println(x + y)
+		case "-":
+			fmt.Println(x - y)
+		case "*":
+			fmt.Println(x * y)
+		case "/":
+			fmt.Println(x / y)
+		default:
+			panic("你输入的你马呢?")
+		}
 	}
 }

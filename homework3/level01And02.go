@@ -1,4 +1,4 @@
-package main
+package homework3
 
 import (
 	"fmt"
@@ -41,23 +41,23 @@ func (v Video) 小星星() {
 	fmt.Println("小星星")
 }
 
-//func main() {
-//	xiaoMin := Person{
-//		name: "小明",
-//		age: 5,
-//		isMarried: false,
-//		id: 2021211503,
-//	}
-//
-//	bvideo := Page{
-//		Title: "NMSL",
-//		Bv: "Bv114514",
-//		Date: time.Now(),
-//		Video: Video{
-//			Time: 114514,
-//		},
-//	}
-//	fmt.Println(xiaoMin)
-//	fmt.Println(bvideo)
-//	bvideo.Video.大钢镚()
-//}
+func Level01AndLevel02() {
+	xiaoMin := Person{
+		name:      "小明",
+		age:       5,
+		isMarried: false,
+		id:        2021211503,
+	}
+
+	bvideo := Page{
+		Title: "NMSL",
+		Bv:    "Bv114514",
+		Date:  time.Now(),
+		Video: Video{
+			Time: 114514,
+		},
+	}
+	fmt.Println(xiaoMin)
+	fmt.Println(bvideo)
+	bvideo.Video.大钢镚()
+}
