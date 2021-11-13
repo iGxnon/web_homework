@@ -1,4 +1,4 @@
-package level01
+package main
 
 type Skill interface {
 	Release()

@@ -1,4 +1,4 @@
-package level03
+package main
 
 // 还是无法抛弃 Java 那套思想
 type UserDao struct {

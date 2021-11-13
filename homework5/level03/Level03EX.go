@@ -1,4 +1,4 @@
-package level03
+package main
 
 import (
 	"crypto/rand"
@@ -14,7 +14,7 @@ import (
 
 // Golang的设计方式和Java有很大的不同...
 
-func Level03EX() {
+func main() {
 	pool := &DataPool{
 		path: "/Users/igxnon/个人项目/Golang/web_homework/homework5/level03/users_server.data",
 	}

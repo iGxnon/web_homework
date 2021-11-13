@@ -1,4 +1,4 @@
-package level02
+package main
 
 import (
 	"fmt"
@@ -81,7 +81,7 @@ func (c *Clock) run() {
 	}
 }
 
-func Level02EX() {
+func main() {
 	ch := make(chan int)
 	clock := NewClock(time.Second*2, "懒狗，懒狗起床了！", Continue, ch)
 	go func(c *Clock) {

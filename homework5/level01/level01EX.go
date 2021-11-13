@@ -1,4 +1,4 @@
-package level01
+package main
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 
 // 有些人作业写着写着就...
 // 貌似指令系统有点问题，懒的改了(
-func Level01EX() {
+func main() {
 	var input string
 
 	RegisterDefaultPrefix()

@@ -1,4 +1,4 @@
-package level01
+package main
 
 import "strings"
 
@@ -12,5 +12,10 @@ func check(s string) bool {
 		"nigga",
 		"nigger",
 	}
-	return strings.Contains(strings.Join(m, "-"), s)
+	for _, badword := range m {
+		if strings.Contains(s, badword) {
+			return true
+		}
+	}
+	return false
 }
