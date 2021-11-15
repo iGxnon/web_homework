@@ -1,7 +1,11 @@
 package main
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"os"
 )
 
 const MaxAge = 3600
@@ -9,6 +13,7 @@ const MaxAge = 3600
 // 凭自己的想法写的，可能会与和已有的设计方式不一样
 
 func main() {
+
 	r := gin.Default()
 
 	// 定义几个服务分组
@@ -22,9 +27,12 @@ func main() {
 
 	r.POST("/login", func(c *gin.Context) {
 		username := c.PostForm("username")
-		password := c.PostForm("password")
+		password := c.PostForm("password") // 假装这是客户端经过加密后传输给服务端然后解密的结果（
 		if dao, ok := UserDaoMap[username]; ok {
-			if password != dao.PwdLock {
+			// md5加密后与数据池内密码对比
+			h := md5.New()
+			h.Write([]byte(password))
+			if hex.EncodeToString(h.Sum(nil)) != dao.PwdLock {
 				c.JSON(403, gin.H{
 					"message": "密码错误",
 				})
@@ -49,7 +57,11 @@ func main() {
 			})
 		}
 	})
-	r.Run()
+
+	err := r.Run()
+	if err != nil {
+		return
+	}
 }
 
 // 中间件=>验证Session
@@ -147,23 +159,39 @@ func loadPaperPage(r *gin.Engine) {
 	})
 }
 
-// 提供文件存储读取服务
+// 提供文件存储提取服务
 func loadStoragePage(r *gin.Engine) {
 	r.MaxMultipartMemory = 8 << 20
-	r.Static("/", "./public")
+	r.Static("/homework6/level01AndLevel02/", "./public")
 	storagePage := r.Group("/storage")
 	storagePage.POST("/put", auth, func(c *gin.Context) {
 		file, err := c.FormFile("file")
 		if err != nil {
 			c.Set("abruptError", err)
 		}
-		err1 := c.SaveUploadedFile(file, file.Filename)
+		err1 := c.SaveUploadedFile(file, "./homework6/level01AndLevel02/files/"+file.Filename)
 		if err1 != nil {
 			c.Set("abruptError", err)
 		}
 		c.String(200, "uploaded successfully")
 	})
+
 	storagePage.GET("/get", auth, func(c *gin.Context) {
 
+		fileDir := c.Query("fileDir")
+		fileName := c.Query("fileName")
+
+		_, err := os.Open("./homework6/level01AndLevel02/files/" + fileDir + "/" + fileName)
+
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"message": "资源不存在",
+			})
+			return
+		}
+		c.Header("Content-Type", "application/octet-stream")
+		c.Header("Content-Disposition", "attachment; filename="+fileName)
+		c.Header("Content-Transfer-Encoding", "binary")
+		c.File("./homework6/level01AndLevel02/files/" + fileDir + "/" + fileName)
 	})
 }
