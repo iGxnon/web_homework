@@ -1,7 +1,7 @@
 package main
 
 const (
-	WOMAN = iota
+	WOMAN Gender = iota
 	MAN
 )
 

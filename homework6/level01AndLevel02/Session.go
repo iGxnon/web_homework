@@ -1,12 +1,16 @@
 package main
 
 import (
-	"log"
-	"os/exec"
+	"math/rand"
+	"strconv"
+	"sync"
 	"time"
 )
 
 var SessionsMap = map[string]*Session{}
+
+// 互斥锁，用于保证SessionsMap操作的原子性
+var mutex sync.Mutex
 
 type Session struct {
 	sid    string
@@ -21,31 +25,36 @@ func (s *Session) onEnable() {
 	}
 	// 不能在访问量大的时候这么操作,只是跑跑测试
 	go func() {
-		<-time.Tick(time.Duration(s.maxAge * int64(time.Second)))
+		time.Sleep(time.Duration(s.maxAge * int64(time.Second)))
 		delete(SessionsMap, s.sid)
 	}()
 }
 
 func PutSessionIfAbsence(session *Session) {
+	mutex.Lock()
 	if _, ok := SessionsMap[session.sid]; !ok {
 		SessionsMap[session.sid] = session
 		session.onEnable()
 	}
+	mutex.Unlock()
 }
 
 func PutSession(session *Session) {
+	mutex.Lock()
 	SessionsMap[session.sid] = session
 	session.onEnable()
+	mutex.Unlock()
 }
 
-// 想不到吧，Windows测试不了的，嘿嘿
-
+// GenerateRandomSid 基于时间生成的uuid
 func GenerateRandomSid() string {
-	// 生成一个uuid作为sid, golang貌似并没有把uuid纳入标准库，投机取巧的获得方法 :p
-	// 其实uuid做为键并不好 :<
-	out, err := exec.Command("uuidgen").Output()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return string(out)
+
+	rand.Seed(666)
+	one := strconv.FormatInt(int64(rand.Intn(100)*time.Now().Nanosecond()%0xFFFFFFFF), 16)
+	two := strconv.FormatInt(int64(rand.Intn(100)*time.Now().Nanosecond()%0xFFFF), 16)
+	three := strconv.FormatInt(int64(rand.Intn(100)*time.Now().Nanosecond()%0xFFFF), 16)
+	four := strconv.FormatInt(int64(rand.Intn(100)*time.Now().Nanosecond()%0xFFFF), 16)
+	five := strconv.FormatInt(int64(rand.Intn(100)*time.Now().Nanosecond()%0xFFFFFFFFFFFF), 16)
+
+	return one + "-" + two + "-" + three + "-" + four + "-" + five
 }

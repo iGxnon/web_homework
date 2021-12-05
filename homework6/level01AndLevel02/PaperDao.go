@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -18,12 +17,12 @@ type PaperDao struct {
 
 func LoadAllPapers() {
 	var str = ""
-	// 拼接起来?
-	var errStr = ""
+
 	b := make([]byte, 1024)
 	file, err := os.Open("/Users/igxnon/个人项目/Golang/web_homework/homework6/level01AndLevel02/paper.data")
 	if err != nil {
-		errStr += err.Error()
+		panic("Can not open paper.data")
+		return
 	}
 	num, err := file.Read(b)
 	for err != io.EOF {
@@ -35,15 +34,19 @@ func LoadAllPapers() {
 		dao := PaperDao{}
 		err := json.Unmarshal([]byte(entry), &dao)
 		if err != nil {
-			errStr += err.Error()
+			continue
 		}
 		PaperMap[dao.Path] = &dao
 	}
-	err3 := file.Close()
-	if err3 != nil {
-		errStr += err.Error()
+	err = file.Close()
+	if err != nil {
+		panic("can not close file")
+		return
 	}
-	if errStr != "" {
-		fmt.Println(errStr)
-	}
+
+	//defer func() {
+	//	if re := recover(); re != nil {
+	//
+	//	}
+	//}()
 }

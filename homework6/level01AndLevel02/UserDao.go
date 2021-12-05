@@ -2,8 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
+	"log"
 	"os"
 	"strings"
 )
@@ -20,12 +20,11 @@ type UserDao struct {
 
 func LoadALlUserDao() {
 	var str = ""
-	// 拼接起来?
-	var errStr = ""
+
 	b := make([]byte, 1024)
 	file, err := os.Open("/Users/igxnon/个人项目/Golang/web_homework/homework6/level01AndLevel02/user_data.data")
 	if err != nil {
-		errStr += err.Error()
+		panic("cannot open file user_data")
 	}
 	num, err := file.Read(b)
 	for err != io.EOF {
@@ -37,15 +36,13 @@ func LoadALlUserDao() {
 		dao := UserDao{}
 		err := json.Unmarshal([]byte(entry), &dao)
 		if err != nil {
-			errStr += err.Error()
+			log.Printf("warning %s cannot unmarshalled", entry)
+			continue
 		}
 		UserDaoMap[dao.Name] = &dao
 	}
-	err3 := file.Close()
-	if err3 != nil {
-		errStr += err.Error()
-	}
-	if errStr != "" {
-		fmt.Println(errStr)
+	err = file.Close()
+	if err != nil {
+		panic("cannot close file user_data")
 	}
 }
