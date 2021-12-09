@@ -1,0 +1,7 @@
+{
+  "default_db_name": "tree_hollows_db",
+  "default_iP_and_port": "localhost:3306",
+  "default_root": "root",
+  "default_password": "502508",
+  "default_charset": "utf8mb4"
+}
