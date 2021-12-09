@@ -17,6 +17,7 @@ const (
 )
 
 func InsertTreeHollow(treeHollow model.TreeHollow) error {
+	sqlStr := "INSERT INTO tree_hollow(prefix, model_json, model_serialized_img, loc, form_title, form_texts, animation, particle) values(?, ?, ?, ?);"
 	loc, err := json.Marshal(treeHollow.Loc)
 	if err != nil {
 		return err
@@ -25,7 +26,7 @@ func InsertTreeHollow(treeHollow model.TreeHollow) error {
 	if err != nil {
 		return err
 	}
-	_, err = dB.Exec("INSERT INTO tree_hollow(prefix, model_json, model_serialized_img, loc, form_title, form_texts, animation, particle) "+"values(?, ?, ?, ?);", treeHollow.Prefix, treeHollow.ModelJson, treeHollow.ModelSerializedIMG, string(loc), treeHollow.FormTitle, string(formTexts), treeHollow.Animation, treeHollow.Particle)
+	_, err = dB.Exec(sqlStr, treeHollow.Prefix, treeHollow.ModelJson, treeHollow.ModelSerializedIMG, string(loc), treeHollow.FormTitle, string(formTexts), treeHollow.Animation, treeHollow.Particle)
 	return err
 }
 
