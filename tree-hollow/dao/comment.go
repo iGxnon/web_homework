@@ -1,6 +1,6 @@
 package dao
 
-import "homework7And8/model"
+import "tree-hollow/model"
 
 func InsertComment(comment model.Comment) error {
 	sqlStr := "INSERT INTO comment(parent_id, comment_type, content, snitch_name, is_open, comment_time, update_time) " + "values(?, ?, ?, ?);"

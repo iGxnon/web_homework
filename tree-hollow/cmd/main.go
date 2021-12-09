@@ -1,8 +1,8 @@
 package main
 
 import (
-	"homework7And8/api"
-	"homework7And8/dao"
+	"tree-hollow/api"
+	"tree-hollow/dao"
 )
 
 func main() {

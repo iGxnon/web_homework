@@ -2,7 +2,7 @@ package dao
 
 import (
 	"encoding/json"
-	"homework7And8/model"
+	"tree-hollow/model"
 )
 
 const (

@@ -1,8 +1,8 @@
 package service
 
 import (
-	"homework7And8/dao"
-	"homework7And8/model"
+	"tree-hollow/dao"
+	"tree-hollow/model"
 )
 
 func AddComment(comment model.Comment) error {

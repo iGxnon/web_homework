@@ -1,6 +1,6 @@
 package dao
 
-import "homework7And8/model"
+import "tree-hollow/model"
 
 func InsertSecret(secret model.Secret) error {
 	return nil
