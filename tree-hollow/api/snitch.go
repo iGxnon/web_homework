@@ -44,6 +44,30 @@ func register(ctx *gin.Context) {
 // 以下为账户服务
 
 func logOffForever(ctx *gin.Context) {
-	//confirmPwd := ctx.PostForm("confirm_password")
-
+	confirmPwd := ctx.PostForm("confirm_password")
+	username, ok := ctx.Get("username")
+	if !ok {
+		utils.RespInternalError(ctx)
+		ctx.Abort()
+		return
+	}
+	name, ok := username.(string)
+	if !ok {
+		utils.RespInternalError(ctx)
+		ctx.Abort()
+		return
+	}
+	err := service.CheckPassword(name, confirmPwd)
+	if err != nil {
+		utils.RespInternalError(ctx)
+		ctx.Abort()
+		return
+	}
+	err = service.LogOffForever(name)
+	if err != nil {
+		utils.RespInternalError(ctx)
+		ctx.Abort()
+		return
+	}
+	utils.RespSuccessfulWithDate(ctx, "注销成功!")
 }

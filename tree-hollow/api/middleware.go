@@ -39,24 +39,27 @@ func auth() gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
+
+		payload := strings.Split(token, ".")[1]
+		var claim = utils.Claims{}
+		bytes, err := base64.StdEncoding.DecodeString(payload)
+		if err != nil {
+			utils.RespInternalError(ctx)
+			ctx.Abort()
+			return
+		}
+		err = json.Unmarshal(bytes, &claim)
+		if err != nil {
+			utils.RespInternalError(ctx)
+			ctx.Abort()
+			return
+		}
+
+		username := claim.UserName
+		ctx.Set("username", username)
+
+		// token 过期了，依据未过期的 refreshToken 生成新的 token 对
 		if !flagToken {
-
-			payload := strings.Split(token, ".")[1]
-			var claim = utils.Claims{}
-			bytes, err := base64.StdEncoding.DecodeString(payload)
-			if err != nil {
-				utils.RespInternalError(ctx)
-				ctx.Abort()
-				return
-			}
-			err = json.Unmarshal(bytes, &claim)
-			if err != nil {
-				utils.RespInternalError(ctx)
-				ctx.Abort()
-				return
-			}
-
-			username := claim.UserName
 
 			token, refreshToken, err := utils.GenerateTokenPairWithUserName(username)
 			if err != nil {
