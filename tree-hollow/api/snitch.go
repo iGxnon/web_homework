@@ -15,8 +15,16 @@ func login(ctx *gin.Context) {
 		utils.RespErrorWithDate(ctx, err)
 		return
 	}
+
+	token, refreshToken, err := utils.GenerateTokenPairWithUserName(username)
+	if err != nil {
+		utils.RespInternalError(ctx)
+		return
+	}
+	ctx.SetCookie("token", token, 0, "/", "", false, true)
+	ctx.SetCookie("refresh_token", refreshToken, 0, "/", "", false, true)
+
 	utils.RespSuccessful(ctx)
-	// todo
 }
 
 func register(ctx *gin.Context) {

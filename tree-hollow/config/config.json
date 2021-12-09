@@ -2,7 +2,8 @@
   "default_db_name": "tree_hollows_db",
   "default_ip_and_port": "localhost:3306",
   "default_root": "root",
-  "default_password": "502508",
+  "default_password": "502508twh..",
   "default_charset": "utf8mb4",
-  "jwt_key": "伟神嘿嘿我的伟神嘿嘿"
+  "jwt_key": "伟神嘿嘿我的伟神嘿嘿",
+  "jwt_time_out": 172800
 }

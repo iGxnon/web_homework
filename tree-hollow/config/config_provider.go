@@ -12,6 +12,7 @@ type Configuration struct {
 	DefaultPassword  string `json:"default_password"`
 	DefaultCharset   string `json:"default_charset"`
 	JWTKey           string `json:"jwt_key"`
+	JWTTimeOut       int64  `json:"jwt_time_out"`
 }
 
 var Config Configuration
