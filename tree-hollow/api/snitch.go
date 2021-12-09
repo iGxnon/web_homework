@@ -10,15 +10,13 @@ import (
 func login(ctx *gin.Context) {
 	username := ctx.PostForm("username")
 	password := ctx.PostForm("password")
-	checkPassword, err := service.CheckPassword(username, password)
+	err := service.CheckPassword(username, password)
 	if err != nil {
 		utils.RespErrorWithDate(ctx, err)
 		return
 	}
-	if checkPassword {
-		utils.RespSuccessful(ctx)
-		// todo
-	}
+	utils.RespSuccessful(ctx)
+	// todo
 }
 
 func register(ctx *gin.Context) {
@@ -33,4 +31,11 @@ func register(ctx *gin.Context) {
 		return
 	}
 	utils.RespSuccessful(ctx)
+}
+
+// 以下为账户服务
+
+func logOffForever(ctx *gin.Context) {
+	//confirmPwd := ctx.PostForm("confirm_password")
+
 }

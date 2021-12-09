@@ -5,20 +5,20 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
-)
-
-const (
-	DefaultDBName    = "tree_hollows_db"
-	DefaultIPAndPort = "localhost:3306"
-	DefaultRoot      = "root"
-	DefaultPassword  = "502508"
-	DefaultCharset   = "utf8mb4"
+	"tree-hollow/config"
 )
 
 var dB *sql.DB
 
 func InitializeDefault() {
-	Initialize(DefaultDBName, DefaultRoot, DefaultPassword, DefaultIPAndPort, DefaultCharset)
+	configuration := config.Config
+	Initialize(
+		configuration.DefaultDBName,
+		configuration.DefaultRoot,
+		configuration.DefaultPassword,
+		configuration.DefaultIPAndPort,
+		configuration.DefaultCharset,
+	)
 }
 
 func Initialize(dbName, root, pwd, ipAndPort, charset string) {

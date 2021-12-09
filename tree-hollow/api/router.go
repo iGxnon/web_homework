@@ -8,5 +8,12 @@ func RegisterRouter() {
 	engine.POST("/login", login)
 	engine.POST("/register", register)
 
+	accountGroup := engine.Group("/account")
+	{
+		accountGroup.Use(auth())
+		accountGroup.DELETE("/", logOffForever)
+
+	}
+
 	engine.Run(":80")
 }

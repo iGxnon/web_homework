@@ -6,17 +6,18 @@ import (
 	"tree-hollow/model"
 )
 
-func CheckPassword(username, password string) (bool, error) {
+// CheckPassword return nil if success
+func CheckPassword(username, password string) error {
 	hasPwd, err := dao.SelectSnitchPasswordFromName(username)
 	if err != nil {
-		return false, err
+		return err
 	}
 	// 验证加盐加密
 	err = bcrypt.CompareHashAndPassword([]byte(hasPwd), []byte(password))
 	if err != nil {
-		return false, err
+		return err
 	}
-	return true, nil
+	return nil
 }
 
 func RegisterSnitch(snitch model.Snitch) error {
