@@ -32,3 +32,7 @@ func RegisterSnitch(snitch model.Snitch) error {
 	}
 	return nil
 }
+
+func LogOffForever(username string) error {
+	return dao.DeleteSnitchFromName(username)
+}
