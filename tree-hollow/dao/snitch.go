@@ -18,11 +18,17 @@ func InsertSnitch(username, hashPwd string) error {
 
 func SelectSnitchPasswordFromName(name string) (string, error) {
 	var pwd string
-	sqlStr := "SELECT password FROM snitch where name = ? "
+	sqlStr := "SELECT password FROM snitch WHERE name = ? ;"
 	row := dB.QueryRow(sqlStr, name)
 	err := row.Scan(&pwd)
 	if err != nil {
 		return "", err
 	}
 	return pwd, nil
+}
+
+func DeleteSnitchFromName(name string) error {
+	sqlStr := "DELETE FROM snitch WHERE name = ? ;"
+	_, err := dB.Exec(sqlStr, name)
+	return err
 }
