@@ -51,17 +51,17 @@ func UpdateSecretCommentsCnt(id, delta int) error {
 	return nil
 }
 
-func GetSecretBrief(id int) (secretDetails model.Secret, err error) {
-	sqlStr := "SELECT * FROM secret WHERE id = ? ;"
+func SelectSecretBrief(id int) (secretBrief model.Secret, err error) {
+	sqlStr := "SELECT * FROM secret WHERE id = ?;"
 	row := dB.QueryRow(sqlStr, id)
-	err = row.Scan(&secretDetails.Id, &secretDetails.CommentCnt, &secretDetails.Content, &secretDetails.SnitchName, &secretDetails.IsOpen, &secretDetails.PostTime, &secretDetails.UpdateTime)
+	err = row.Scan(&secretBrief.Id, &secretBrief.CommentCnt, &secretBrief.Content, &secretBrief.SnitchName, &secretBrief.IsOpen, &secretBrief.PostTime, &secretBrief.UpdateTime)
 	if err != nil {
 		return model.Secret{}, err
 	}
 	return
 }
 
-func GetSecretDetails(id int) (secretDetails model.SecretDetails, err error) {
+func SelectSecretDetails(id int) (secretDetails model.SecretDetails, err error) {
 	sqlStr := "SELECT * FROM secret WHERE id = ? ;"
 	row := dB.QueryRow(sqlStr, id)
 	err = row.Scan(&secretDetails.Id, &secretDetails.CommentCnt, &secretDetails.Content, &secretDetails.SnitchName, &secretDetails.IsOpen, &secretDetails.PostTime, &secretDetails.UpdateTime)
