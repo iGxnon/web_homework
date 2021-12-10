@@ -3,6 +3,7 @@ package service
 import (
 	"tree-hollow/dao"
 	"tree-hollow/model"
+	"tree-hollow/utils"
 )
 
 func AddComment(comment model.Comment) error {
@@ -27,5 +28,9 @@ func UpdateCommentByContent(id int, content string) error {
 
 // GetAllChildComment 获取该节点以下所有评论
 func GetAllChildComment(parentId int, commentType model.CommentType) ([]model.Comment, error) {
-	return nil, nil
+	root := model.Comment{
+		ParentId:    parentId,
+		CommentType: commentType,
+	}
+	return utils.BFS(root)
 }
