@@ -12,7 +12,20 @@ func RegisterRouter() {
 	{
 		accountGroup.Use(auth())
 		accountGroup.DELETE("/", logOffForever)
+	}
 
+	secretGroup := engine.Group("/secret")
+	{
+		secretGroup.Use(auth())
+		secretGroup.GET("/", getSecret)
+		secretGroup.POST("/", addSecret)
+		secretGroup.PUT("/", updateSecret)
+		secretGroup.DELETE("/", deleteSecret)
+	}
+
+	commentGroup := engine.Group("/comment")
+	{
+		commentGroup.Use(auth())
 	}
 
 	engine.Run(":80")
