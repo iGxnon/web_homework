@@ -30,6 +30,12 @@ func login(ctx *gin.Context) {
 func register(ctx *gin.Context) {
 	username := ctx.PostForm("username")
 	password := ctx.PostForm("password")
+
+	if !utils.CheckPwdSafe(password) {
+		utils.RespErrorWithDate(ctx, "密码过于简单!")
+		return
+	}
+
 	err := service.RegisterSnitch(model.Snitch{
 		Name:     username,
 		Password: password,
