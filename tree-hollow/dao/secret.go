@@ -58,6 +58,9 @@ func SelectSecretBrief(id int) (secretBrief model.Secret, err error) {
 	if err != nil {
 		return model.Secret{}, err
 	}
+	if !secretBrief.IsOpen {
+		secretBrief.SnitchName = "***"
+	}
 	return
 }
 
@@ -68,15 +71,18 @@ func SelectSecretDetails(id int) (secretDetails model.SecretDetails, err error) 
 	if err != nil {
 		return model.SecretDetails{}, err
 	}
-	comments, err := GetChildCommentsById(id, model.TypeSecret)
+	comments, err := SelectChildCommentsById(id, model.TypeSecret)
 	if err != nil {
 		return model.SecretDetails{}, err
 	}
 	secretDetails.Comments = comments
+	if !secretDetails.IsOpen {
+		secretDetails.SnitchName = "***"
+	}
 	return
 }
 
-func GetSecretsFromSnitchName(name string) ([]model.Secret, error) {
+func SelectSecretsFromSnitchName(name string) ([]model.Secret, error) {
 	sqlStr := "SELECT * FROM secret WHERE snitch_name = ? ;"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
@@ -107,6 +113,9 @@ func GetSecretsFromSnitchName(name string) ([]model.Secret, error) {
 		err := rows.Scan(&secret.Id, &secret.CommentCnt, &secret.Content, &secret.SnitchName, &secret.IsOpen, &secret.PostTime, &secret.UpdateTime)
 		if err != nil {
 			return nil, err
+		}
+		if !secret.IsOpen {
+			secret.SnitchName = "***"
 		}
 		secrets = append(secrets, secret)
 	}

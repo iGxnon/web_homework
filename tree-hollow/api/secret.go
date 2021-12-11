@@ -53,9 +53,7 @@ func getSecretBrief(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
-	if !brief.IsOpen {
-		brief.SnitchName = "***"
-	}
+
 	utils.RespSuccessfulWithDate(ctx, brief)
 }
 
@@ -71,9 +69,6 @@ func getSecretDetails(ctx *gin.Context) {
 		utils.RespInternalError(ctx)
 		ctx.Abort()
 		return
-	}
-	if !details.IsOpen {
-		details.SnitchName = "***"
 	}
 	utils.RespSuccessfulWithDate(ctx, details)
 }

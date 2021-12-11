@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-type CommentType uint
+type CommentType int
 
 const (
 	TypeSecret  CommentType = iota // 代表一条 Secret 的评论

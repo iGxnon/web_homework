@@ -11,7 +11,15 @@ func AddComment(comment model.Comment) error {
 }
 
 func GetChildCommentsById(parentId int, commentType model.CommentType) ([]model.Comment, error) {
-	return dao.GetChildCommentsById(parentId, commentType)
+	return dao.SelectChildCommentsById(parentId, commentType)
+}
+
+func GetCommentDetails(commentId int) (commentDetails model.CommentDetails, err error) {
+	return dao.SelectCommentDetails(commentId)
+}
+
+func GetCommentBrief(commentId int) (comment model.Comment, err error) {
+	return dao.SelectCommentBrief(commentId)
 }
 
 func DeleteComment(id int) error {
@@ -26,11 +34,26 @@ func UpdateCommentByContent(id int, content string) error {
 	return dao.UpdateCommentByContent(id, content)
 }
 
-// GetAllChildComment 获取该节点以下所有评论
-func GetAllChildComment(parentId int, commentType model.CommentType) ([]model.Comment, error) {
+// GetAllChildComment 获取该评论以下所有评论
+func GetAllChildComment(parentId int) ([]model.Comment, error) {
 	root := model.Comment{
-		ParentId:    parentId,
-		CommentType: commentType,
+		Id: parentId,
 	}
-	return utils.BFS(root)
+	ans := make([]model.Comment, 0)
+	queue := utils.NewQueue()
+	queue.Offer(root)
+	for !queue.IsEmpty() {
+		poll := queue.Poll().(model.Comment)
+		ans = append(ans, poll)
+		// 树中不会出现双向箭头，所以不需要维护closeList
+		comments, err := GetChildCommentsById(poll.Id, model.TypeComment)
+		if err != nil {
+			return nil, err
+		}
+		for _, comment := range comments {
+			queue.Offer(comment)
+		}
+	}
+	// 除掉自身
+	return ans[1:], nil
 }

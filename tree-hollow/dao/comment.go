@@ -8,12 +8,15 @@ import (
 )
 
 func InsertComment(comment model.Comment) error {
-	sqlStr := "INSERT INTO comment(parent_id, comment_type, content, snitch_name, is_open, comment_time, update_time) values(?, ?, ?, ?);"
+	sqlStr := "INSERT INTO comment(parent_id, comment_type, content, snitch_name, is_open, comment_time, update_time) values(?, ?, ?, ?, ?, ?, ?);"
 	_, err := dB.Exec(sqlStr, comment.ParentId, comment.CommentType, comment.Content, comment.SnitchName, comment.IsOpen, comment.CommentTime, comment.UpdateTime)
 	if err != nil {
 		return err
 	}
-	return UpdateSecretCommentsCnt(comment.ParentId, 1)
+	if comment.CommentType == model.TypeSecret {
+		return UpdateSecretCommentsCnt(comment.ParentId, 1)
+	}
+	return nil
 }
 
 func UpdateCommentByContent(id int, content string) error {
@@ -43,8 +46,8 @@ func DeleteComment(id int) error {
 	return nil
 }
 
-// GetChildCommentsById 获取一级Comment
-func GetChildCommentsById(parentId int, commentType model.CommentType) ([]model.Comment, error) {
+// SelectChildCommentsById 获取一级Comment
+func SelectChildCommentsById(parentId int, commentType model.CommentType) ([]model.Comment, error) {
 	sqlStr := "SELECT * FROM comment WHERE parent_id = ? AND comment_type = ? ;"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
@@ -79,30 +82,39 @@ func GetChildCommentsById(parentId int, commentType model.CommentType) ([]model.
 		if err != nil {
 			return nil, err
 		}
+		if !comment.IsOpen {
+			comment.SnitchName = "***"
+		}
 		comments = append(comments, comment)
 	}
 
 	return comments, nil
 }
 
-func GetCommentDetails(commentId int) (commentDetails model.CommentDetails, err error) {
+func SelectCommentDetails(commentId int) (commentDetails model.CommentDetails, err error) {
 	sqlStr := "SELECT * FROM comment WHERE id=?;"
 	row := dB.QueryRow(sqlStr, commentId)
 	err = row.Scan(&commentDetails.Id, &commentDetails.ParentId, &commentDetails.CommentType, &commentDetails.Content, &commentDetails.SnitchName, &commentDetails.IsOpen, &commentDetails.CommentTime, &commentDetails.UpdateTime)
 	if err != nil {
 		return model.CommentDetails{}, err
 	}
-	comments, err := GetChildCommentsById(commentDetails.ParentId, commentDetails.CommentType)
+	comments, err := SelectChildCommentsById(commentDetails.Id, model.TypeComment)
 	commentDetails.ChildComment = comments
+	if !commentDetails.IsOpen {
+		commentDetails.SnitchName = "***"
+	}
 	return
 }
 
-func GetCommentBrief(commentId int) (comment model.Comment, err error) {
+func SelectCommentBrief(commentId int) (comment model.Comment, err error) {
 	sqlStr := "SELECT * FROM comment WHERE id=?;"
 	row := dB.QueryRow(sqlStr, commentId)
 	err = row.Scan(&comment.Id, &comment.ParentId, &comment.CommentType, &comment.Content, &comment.SnitchName, &comment.IsOpen, &comment.CommentTime, &comment.UpdateTime)
 	if err != nil {
 		return model.Comment{}, err
+	}
+	if !comment.IsOpen {
+		comment.SnitchName = "***"
 	}
 	return
 }

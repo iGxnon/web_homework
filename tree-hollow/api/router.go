@@ -26,6 +26,10 @@ func RegisterRouter() {
 	commentGroup := engine.Group("/comment")
 	{
 		commentGroup.Use(auth())
+		commentGroup.POST("/a", getComment)
+		commentGroup.POST("/", addComment)
+		commentGroup.PUT("/", updateComment)
+		commentGroup.DELETE("/", deleteComment)
 	}
 
 	engine.Run(":80")

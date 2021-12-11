@@ -15,7 +15,7 @@ func GetSecretDetails(id int) (model.SecretDetails, error) {
 }
 
 func GetSecretsFromSnitchName(name string) ([]model.Secret, error) {
-	return dao.GetSecretsFromSnitchName(name)
+	return dao.SelectSecretsFromSnitchName(name)
 }
 
 func GetCommentCnt(id int) (int, error) {
