@@ -25,7 +25,7 @@ func setSnitchName(ctx *gin.Context, name *string) {
 }
 
 func getSecret(ctx *gin.Context) {
-	typeGet := ctx.PostForm("type")
+	typeGet := ctx.Query("type")
 
 	if typeGet == "brief" {
 		getSecretBrief(ctx)
@@ -41,7 +41,7 @@ func getSecret(ctx *gin.Context) {
 }
 
 func getSecretBrief(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.PostForm("id"))
+	id, err := strconv.Atoi(ctx.Query("id"))
 	if err != nil {
 		utils.RespInternalError(ctx)
 		ctx.Abort()
@@ -58,7 +58,7 @@ func getSecretBrief(ctx *gin.Context) {
 }
 
 func getSecretDetails(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.PostForm("id"))
+	id, err := strconv.Atoi(ctx.Query("id"))
 	if err != nil {
 		utils.RespInternalError(ctx)
 		ctx.Abort()

@@ -10,19 +10,19 @@ import (
 )
 
 func getComment(ctx *gin.Context) {
-	strId := ctx.PostForm("id")
+	strId := ctx.Query("id")
 	id, err := strconv.Atoi(strId)
 	if err != nil {
 		utils.RespErrorWithDate(ctx, "id invalid!")
 		return
 	}
-	infoType := ctx.DefaultPostForm("type", "brief")
+	infoType := ctx.DefaultQuery("type", "brief")
 	if infoType != "brief" && infoType != "details" {
 		utils.RespErrorWithDate(ctx, "type invalid!")
 		return
 	}
 
-	searched, err := strconv.ParseBool(ctx.DefaultPostForm("search_child", "false"))
+	searched, err := strconv.ParseBool(ctx.DefaultQuery("search_child", "false"))
 	if err != nil {
 		utils.RespErrorWithDate(ctx, "search_child invalid!")
 		return
