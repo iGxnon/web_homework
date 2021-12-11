@@ -22,6 +22,10 @@ func GetCommentBrief(commentId int) (comment model.Comment, err error) {
 	return dao.SelectCommentBrief(commentId)
 }
 
+func CheckCommentIdMatchName(id int, name string) (bool, error) {
+	return dao.CheckCommentIdMatchName(id, name)
+}
+
 func DeleteComment(id int) error {
 	return dao.DeleteComment(id)
 }

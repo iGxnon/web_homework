@@ -38,12 +38,8 @@ func AddSecret(secret model.Secret) error {
 	return dao.InsertSecret(secret)
 }
 
-func CheckIdMatchName(id int, name string) (bool, error) {
-	brief, err := dao.SelectSecretBrief(id)
-	if err != nil {
-		return false, err
-	}
-	return brief.SnitchName == name, nil
+func CheckSecretIdMatchName(id int, name string) (bool, error) {
+	return dao.CheckSecretIdMatchName(id, name)
 }
 
 func DeleteSecretFromId(id int) error {

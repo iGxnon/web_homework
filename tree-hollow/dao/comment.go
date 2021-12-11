@@ -118,3 +118,14 @@ func SelectCommentBrief(commentId int) (comment model.Comment, err error) {
 	}
 	return
 }
+
+func CheckCommentIdMatchName(id int, name string) (bool, error) {
+	var get string
+	sqlStr := "SELECT snitch_name FROM comment WHERE id = ?;"
+	row := dB.QueryRow(sqlStr, id)
+	err := row.Scan(&get)
+	if err != nil {
+		return false, err
+	}
+	return get == name, nil
+}

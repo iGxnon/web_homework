@@ -64,6 +64,17 @@ func SelectSecretBrief(id int) (secretBrief model.Secret, err error) {
 	return
 }
 
+func CheckSecretIdMatchName(id int, name string) (bool, error) {
+	var get string
+	sqlStr := "SELECT snitch_name FROM secret WHERE id = ?;"
+	row := dB.QueryRow(sqlStr, id)
+	err := row.Scan(&get)
+	if err != nil {
+		return false, err
+	}
+	return get == name, nil
+}
+
 func SelectSecretDetails(id int) (secretDetails model.SecretDetails, err error) {
 	sqlStr := "SELECT * FROM secret WHERE id = ? ;"
 	row := dB.QueryRow(sqlStr, id)

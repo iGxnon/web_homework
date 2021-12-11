@@ -9,21 +9,6 @@ import (
 	"tree-hollow/utils"
 )
 
-func setSnitchName(ctx *gin.Context, name *string) {
-	username, ok := ctx.Get("username")
-	if !ok {
-		utils.RespErrorWithDate(ctx, "你没有登录!")
-		ctx.Abort()
-		return
-	}
-	*name, ok = username.(string)
-	if !ok {
-		utils.RespInternalError(ctx)
-		ctx.Abort()
-		return
-	}
-}
-
 func getSecret(ctx *gin.Context) {
 	typeGet := ctx.Query("type")
 
@@ -75,7 +60,7 @@ func getSecretDetails(ctx *gin.Context) {
 
 func addSecret(ctx *gin.Context) {
 	var name string
-	setSnitchName(ctx, &name)
+	utils.SetSnitchName(ctx, &name)
 	content := ctx.PostForm("content")
 	isOpen, err := strconv.ParseBool(ctx.PostForm("is_open"))
 	if err != nil {
@@ -108,9 +93,9 @@ func deleteSecret(ctx *gin.Context) {
 		return
 	}
 	var name string
-	setSnitchName(ctx, &name)
+	utils.SetSnitchName(ctx, &name)
 
-	ok, err := service.CheckIdMatchName(id, name)
+	ok, err := service.CheckSecretIdMatchName(id, name)
 	if err != nil {
 		utils.RespInternalError(ctx)
 		ctx.Abort()
@@ -131,7 +116,7 @@ func deleteSecret(ctx *gin.Context) {
 
 func updateSecret(ctx *gin.Context) {
 	var name string
-	setSnitchName(ctx, &name)
+	utils.SetSnitchName(ctx, &name)
 	id, err := strconv.Atoi(ctx.PostForm("id"))
 	if err != nil {
 		utils.RespInternalError(ctx)
@@ -139,7 +124,7 @@ func updateSecret(ctx *gin.Context) {
 		return
 	}
 
-	ok, err := service.CheckIdMatchName(id, name)
+	ok, err := service.CheckSecretIdMatchName(id, name)
 	if err != nil {
 		utils.RespInternalError(ctx)
 		ctx.Abort()

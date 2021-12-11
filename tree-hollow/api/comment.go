@@ -68,24 +68,41 @@ func searchComment(ctx *gin.Context, id int) {
 	utils.RespSuccessfulWithDate(ctx, comment)
 }
 
-// todo 鉴权
 func updateComment(ctx *gin.Context) {
+	var name string
+	utils.SetSnitchName(ctx, &name)
+
 	id, err := strconv.Atoi(ctx.PostForm("id"))
 	if err != nil {
 		utils.RespErrorWithDate(ctx, "id invalid!")
 		return
 	}
-	content := ctx.PostForm("content")
-	isOpen, err := strconv.ParseBool(ctx.PostForm("is_open"))
+
+	checked, err := service.CheckCommentIdMatchName(id, name)
 	if err != nil {
-		utils.RespErrorWithDate(ctx, "is_open invalid!")
+		utils.RespInternalError(ctx)
 		return
 	}
+
 	brief, err := service.GetCommentBrief(id)
 	if err != nil {
 		utils.RespInternalError(ctx)
 		return
 	}
+
+	if !checked {
+		utils.RespErrorWithDate(ctx, "你不能更新别人的评论")
+		return
+	}
+
+	content := ctx.PostForm("content")
+	isOpen, err := strconv.ParseBool(ctx.PostForm("is_open"))
+
+	if err != nil {
+		utils.RespErrorWithDate(ctx, "is_open invalid!")
+		return
+	}
+
 	comment := model.Comment{
 		Id:          id,
 		ParentId:    brief.ParentId,
@@ -104,8 +121,11 @@ func updateComment(ctx *gin.Context) {
 	utils.RespSuccessful(ctx)
 }
 
-// todo 鉴权
 func addComment(ctx *gin.Context) {
+
+	var name string
+	utils.SetSnitchName(ctx, &name)
+
 	parentId, err := strconv.Atoi(ctx.PostForm("parent_id"))
 	if err != nil {
 		utils.RespErrorWithDate(ctx, "parent_id invalid!")
@@ -117,7 +137,7 @@ func addComment(ctx *gin.Context) {
 		return
 	}
 	content := ctx.PostForm("content")
-	snitchName := ctx.PostForm("snitch_name")
+
 	isOpen, err := strconv.ParseBool(ctx.PostForm("is_open"))
 	if err != nil {
 		utils.RespErrorWithDate(ctx, "is_open invalid!")
@@ -127,7 +147,7 @@ func addComment(ctx *gin.Context) {
 		ParentId:    parentId,
 		CommentType: model.CommentType(commentType),
 		Content:     content,
-		SnitchName:  snitchName,
+		SnitchName:  name,
 		IsOpen:      isOpen,
 		CommentTime: time.Now(),
 		UpdateTime:  time.Now(),
@@ -140,7 +160,33 @@ func addComment(ctx *gin.Context) {
 	utils.RespSuccessful(ctx)
 }
 
-// todo
 func deleteComment(ctx *gin.Context) {
+	var name string
+	utils.SetSnitchName(ctx, &name)
+
+	id, err := strconv.Atoi(ctx.PostForm("id"))
+	if err != nil {
+		utils.RespErrorWithDate(ctx, "id invalid!")
+		return
+	}
+
+	checked, err := service.CheckCommentIdMatchName(id, name)
+	if err != nil {
+		utils.RespInternalError(ctx)
+		return
+	}
+
+	if !checked {
+		utils.RespErrorWithDate(ctx, "你不能删除别人的评论")
+		return
+	}
+
+	err = service.DeleteComment(id)
+	if err != nil {
+		utils.RespInternalError(ctx)
+		return
+	}
+
+	utils.RespSuccessful(ctx)
 
 }
