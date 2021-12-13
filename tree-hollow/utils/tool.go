@@ -1,27 +1,16 @@
 package utils
 
 import (
-	"github.com/gin-gonic/gin"
 	"regexp"
 )
 
-func SetSnitchName(ctx *gin.Context, name *string) {
-	username, ok := ctx.Get("username")
-	if !ok {
-		RespErrorWithDate(ctx, "你没有登录!")
-		ctx.Abort()
-		return
-	}
-	*name, ok = username.(string)
-	if !ok {
-		RespInternalError(ctx)
-		ctx.Abort()
-		return
-	}
-}
-
-// CheckPwdSafe 密码要求: 不能是纯数字，必须有大小写字符和特殊字符，不能有空白字符
+// CheckPwdSafe 密码要求: 大于等于6个字符，不能是纯数字，必须有大小写字符和特殊字符，不能有空白字符
+// 写的很拉胯
 func CheckPwdSafe(password string) bool {
+
+	if len(password) < 6 {
+		return false
+	}
 
 	// 检测是否是纯数字
 	rets := regexp.MustCompile(`\d`)

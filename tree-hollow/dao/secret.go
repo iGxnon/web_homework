@@ -58,21 +58,7 @@ func SelectSecretBrief(id int) (secretBrief model.Secret, err error) {
 	if err != nil {
 		return model.Secret{}, err
 	}
-	if !secretBrief.IsOpen {
-		secretBrief.SnitchName = "***"
-	}
 	return
-}
-
-func CheckSecretIdMatchName(id int, name string) (bool, error) {
-	var get string
-	sqlStr := "SELECT snitch_name FROM secret WHERE id = ?;"
-	row := dB.QueryRow(sqlStr, id)
-	err := row.Scan(&get)
-	if err != nil {
-		return false, err
-	}
-	return get == name, nil
 }
 
 func SelectSecretDetails(id int) (secretDetails model.SecretDetails, err error) {
@@ -87,9 +73,6 @@ func SelectSecretDetails(id int) (secretDetails model.SecretDetails, err error) 
 		return model.SecretDetails{}, err
 	}
 	secretDetails.Comments = comments
-	if !secretDetails.IsOpen {
-		secretDetails.SnitchName = "***"
-	}
 	return
 }
 

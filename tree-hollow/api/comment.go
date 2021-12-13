@@ -69,8 +69,8 @@ func searchComment(ctx *gin.Context, id int) {
 }
 
 func updateComment(ctx *gin.Context) {
-	var name string
-	utils.SetSnitchName(ctx, &name)
+
+	name := ctx.GetString("username")
 
 	id, err := strconv.Atoi(ctx.PostForm("id"))
 	if err != nil {
@@ -123,8 +123,7 @@ func updateComment(ctx *gin.Context) {
 
 func addComment(ctx *gin.Context) {
 
-	var name string
-	utils.SetSnitchName(ctx, &name)
+	name := ctx.GetString("username")
 
 	parentId, err := strconv.Atoi(ctx.PostForm("parent_id"))
 	if err != nil {
@@ -161,8 +160,7 @@ func addComment(ctx *gin.Context) {
 }
 
 func deleteComment(ctx *gin.Context) {
-	var name string
-	utils.SetSnitchName(ctx, &name)
+	name := ctx.GetString("username")
 
 	id, err := strconv.Atoi(ctx.PostForm("id"))
 	if err != nil {

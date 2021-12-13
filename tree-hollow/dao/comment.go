@@ -13,9 +13,6 @@ func InsertComment(comment model.Comment) error {
 	if err != nil {
 		return err
 	}
-	if comment.CommentType == model.TypeSecret {
-		return UpdateSecretCommentsCnt(comment.ParentId, 1)
-	}
 	return nil
 }
 
@@ -100,9 +97,6 @@ func SelectCommentDetails(commentId int) (commentDetails model.CommentDetails, e
 	}
 	comments, err := SelectChildCommentsById(commentDetails.Id, model.TypeComment)
 	commentDetails.ChildComment = comments
-	if !commentDetails.IsOpen {
-		commentDetails.SnitchName = "***"
-	}
 	return
 }
 
@@ -113,19 +107,5 @@ func SelectCommentBrief(commentId int) (comment model.Comment, err error) {
 	if err != nil {
 		return model.Comment{}, err
 	}
-	if !comment.IsOpen {
-		comment.SnitchName = "***"
-	}
 	return
-}
-
-func CheckCommentIdMatchName(id int, name string) (bool, error) {
-	var get string
-	sqlStr := "SELECT snitch_name FROM comment WHERE id = ?;"
-	row := dB.QueryRow(sqlStr, id)
-	err := row.Scan(&get)
-	if err != nil {
-		return false, err
-	}
-	return get == name, nil
 }

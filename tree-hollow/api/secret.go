@@ -59,8 +59,7 @@ func getSecretDetails(ctx *gin.Context) {
 }
 
 func addSecret(ctx *gin.Context) {
-	var name string
-	utils.SetSnitchName(ctx, &name)
+	name := ctx.GetString("username")
 	content := ctx.PostForm("content")
 	isOpen, err := strconv.ParseBool(ctx.PostForm("is_open"))
 	if err != nil {
@@ -92,8 +91,8 @@ func deleteSecret(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
-	var name string
-	utils.SetSnitchName(ctx, &name)
+
+	name := ctx.GetString("username")
 
 	ok, err := service.CheckSecretIdMatchName(id, name)
 	if err != nil {
@@ -115,8 +114,8 @@ func deleteSecret(ctx *gin.Context) {
 }
 
 func updateSecret(ctx *gin.Context) {
-	var name string
-	utils.SetSnitchName(ctx, &name)
+	name := ctx.GetString("username")
+
 	id, err := strconv.Atoi(ctx.PostForm("id"))
 	if err != nil {
 		utils.RespInternalError(ctx)

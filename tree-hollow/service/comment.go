@@ -7,6 +7,9 @@ import (
 )
 
 func AddComment(comment model.Comment) error {
+	if comment.CommentType == model.TypeSecret {
+		return dao.UpdateSecretCommentsCnt(comment.ParentId, 1)
+	}
 	return dao.InsertComment(comment)
 }
 
@@ -15,15 +18,27 @@ func GetChildCommentsById(parentId int, commentType model.CommentType) ([]model.
 }
 
 func GetCommentDetails(commentId int) (commentDetails model.CommentDetails, err error) {
-	return dao.SelectCommentDetails(commentId)
+	details, err := dao.SelectCommentDetails(commentId)
+	if !details.IsOpen {
+		details.SnitchName = "***"
+	}
+	return details, err
 }
 
 func GetCommentBrief(commentId int) (comment model.Comment, err error) {
-	return dao.SelectCommentBrief(commentId)
+	brief, err := dao.SelectCommentBrief(commentId)
+	if !brief.IsOpen {
+		brief.SnitchName = "***"
+	}
+	return brief, err
 }
 
 func CheckCommentIdMatchName(id int, name string) (bool, error) {
-	return dao.CheckCommentIdMatchName(id, name)
+	brief, err := dao.SelectCommentBrief(id)
+	if err != nil {
+		return false, err
+	}
+	return brief.SnitchName == name, nil
 }
 
 func DeleteComment(id int) error {

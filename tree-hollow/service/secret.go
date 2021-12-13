@@ -7,11 +7,19 @@ import (
 )
 
 func GetSecretBrief(id int) (model.Secret, error) {
-	return dao.SelectSecretBrief(id)
+	brief, err := dao.SelectSecretBrief(id)
+	if !brief.IsOpen {
+		brief.SnitchName = "***"
+	}
+	return brief, err
 }
 
 func GetSecretDetails(id int) (model.SecretDetails, error) {
-	return dao.SelectSecretDetails(id)
+	details, err := dao.SelectSecretDetails(id)
+	if !details.IsOpen {
+		details.SnitchName = "***"
+	}
+	return details, err
 }
 
 func GetSecretsFromSnitchName(name string) ([]model.Secret, error) {
@@ -39,7 +47,11 @@ func AddSecret(secret model.Secret) error {
 }
 
 func CheckSecretIdMatchName(id int, name string) (bool, error) {
-	return dao.CheckSecretIdMatchName(id, name)
+	brief, err := dao.SelectSecretBrief(id)
+	if err != nil {
+		return false, err
+	}
+	return brief.SnitchName == name, nil
 }
 
 func DeleteSecretFromId(id int) error {
