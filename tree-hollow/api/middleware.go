@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"strings"
 	"tree-hollow/utils"
 )
@@ -72,4 +73,25 @@ func auth() gin.HandlerFunc {
 
 		}
 	}
+}
+
+func cors() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		method := ctx.Request.Method
+
+		// 同意所有源
+		ctx.Header("Access-Control-Allow-Origin", "*")
+
+		// 处理并放行所有 OPTIONS 请求
+		if method == "OPTIONS" {
+			ctx.Header("Access-Control-Allow-Methods", "PUT, GET, DELETE, POST")
+			ctx.Header("Access-Control-Allow-Headers", "X-Custom-Header")
+			ctx.Header("Access-Control-Allow-Credentials", "true")
+			ctx.Header("Access-Control-Max-Age", "1728000")
+			ctx.AbortWithStatus(http.StatusNoContent)
+		}
+
+		ctx.Next()
+	}
+
 }

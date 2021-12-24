@@ -1,6 +1,9 @@
 package utils
 
 import (
+	"bytes"
+	"crypto/aes"
+	"crypto/cipher"
 	"regexp"
 )
 
@@ -48,4 +51,45 @@ func CheckPwdSafe(password string) bool {
 	}
 
 	return true
+}
+
+// PKCS7Padding 把 ciphertext 补成 blockSize 整数倍
+func PKCS7Padding(ciphertext []byte, blockSize int) []byte {
+	padding := blockSize - len(ciphertext)%blockSize
+	padtext := bytes.Repeat([]byte{byte(padding)}, padding) // 缺多少个字节就补多少个 例：缺5个补5个5
+	return append(ciphertext, padtext...)
+}
+
+func PKCS7UnPadding(origData []byte) []byte {
+	length := len(origData)
+	unpadding := int(origData[length-1])   // 拿到最后一个字节(数字)，从而得知之前补了多少个字节
+	return origData[:(length - unpadding)] // 获取原本未补齐的 origData
+}
+
+// AesEncrypt AES加密
+func AesEncrypt(origData, key []byte) ([]byte, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	blockSize := block.BlockSize()
+	origData = PKCS7Padding(origData, blockSize)
+	blockMode := cipher.NewCBCEncrypter(block, key[:blockSize])
+	encrypted := make([]byte, len(origData))
+	blockMode.CryptBlocks(encrypted, origData)
+	return encrypted, nil
+}
+
+// AesDecrypt AES解密
+func AesDecrypt(encrypted, key []byte) ([]byte, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	blockSize := block.BlockSize()
+	blockMode := cipher.NewCBCDecrypter(block, key[:blockSize])
+	origData := make([]byte, len(encrypted))
+	blockMode.CryptBlocks(origData, encrypted)
+	origData = PKCS7UnPadding(origData)
+	return origData, nil
 }
