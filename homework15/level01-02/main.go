@@ -1,8 +1,8 @@
 package main
 
 import (
-	"homework15/level01/ws_parser"
-	"homework15/level01/ws_upgrader"
+	"homework15/level01-02/ws_parser"
+	"homework15/level01-02/ws_upgrader"
 	"log"
 	"net/http"
 	"time"

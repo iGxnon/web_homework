@@ -4,7 +4,7 @@ import (
 	"crypto/sha1"
 	"encoding/base64"
 	"errors"
-	"homework15/level01/ws_parser"
+	"homework15/level01-02/ws_parser"
 	"log"
 	"net"
 	"net/http"
