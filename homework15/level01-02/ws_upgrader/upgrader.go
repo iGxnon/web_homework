@@ -30,25 +30,25 @@ import (
 
 // Example:
 
-//HTTP/1.1 101 Switching Protocols
-//Upgrade: websocket
-//Connection: Upgrade
-//Sec-WebSocket-Accept: GZS2YkUYBCu6eW6qTtiqD2bqEFE=
+// HTTP/1.1 101 Switching Protocols
+// Upgrade: websocket
+// Connection: Upgrade
+// Sec-WebSocket-Accept: GZS2YkUYBCu6eW6qTtiqD2bqEFE=
 
-//GET / HTTP/1.1
-//Host: 121.40.165.18:8800
-//User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0
-//Accept: */*
-//Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
-//Accept-Encoding: gzip, deflate
-//Sec-WebSocket-Version: 13
-//Origin: http://www.websocket-test.com
-//Sec-WebSocket-Extensions: permessage-deflate
-//Sec-WebSocket-Key: HSohHIffGH1RFigAVUNDYw==
-//Connection: keep-alive, Upgrade
-//Pragma: no-cache
-//Cache-Control: no-cache
-//Upgrade: websocket
+// GET / HTTP/1.1
+// Host: 121.40.165.18:8800
+// User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0
+// Accept: */*
+// Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+// Accept-Encoding: gzip, deflate
+// Sec-WebSocket-Version: 13
+// Origin: http://www.websocket-test.com
+// Sec-WebSocket-Extensions: permessage-deflate
+// Sec-WebSocket-Key: HSohHIffGH1RFigAVUNDYw==
+// Connection: keep-alive, Upgrade
+// Pragma: no-cache
+// Cache-Control: no-cache
+// Upgrade: websocket
 
 type WebsocketConn struct {
 	mu         chan struct{} // protect write
@@ -157,6 +157,20 @@ func (u *Upgrader) Update(w http.ResponseWriter, r *http.Request) (conn *Websock
 		err = errors.New("cannot write bytes to hijacked conn")
 		return
 	}
+
+	// heart pump
+	go func() {
+		tick := time.NewTicker(pongTimeout)
+		defer tick.Stop()
+		for {
+			err := conn.Ping()
+			if err != nil {
+				conn.Close()
+				return
+			}
+			<-tick.C
+		}
+	}()
 
 	return
 }

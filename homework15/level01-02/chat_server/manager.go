@@ -37,6 +37,7 @@ func NewServer() *ClientManager {
 }
 
 func (c *ClientManager) ServeWithContext(ctx context.Context) {
+	log.Println("Server start")
 LOOP:
 	for {
 		select {
@@ -48,6 +49,7 @@ LOOP:
 				SenderID: conn.ID,
 				Content:  "came in",
 			}
+			log.Printf("A new client(%s) came in\n", conn.ID)
 			c.BroadcastMessage(mess, conn)
 		case conn := <-c.UnRegister:
 			func() {
@@ -60,12 +62,14 @@ LOOP:
 						SenderID: conn.ID,
 						Content:  "came out",
 					}
+					log.Printf("A client(%s) came out\n", conn.ID)
 					c.BroadcastMessage(mess, conn)
 
 					close(conn.Send)
 				}
 			}()
 		case mess := <-c.Broadcast:
+			log.Println("broadcast: ", mess)
 			if mess.RecipientID == "" {
 				c.BroadcastMessage(mess, c.ClientMap[mess.SenderID])
 				continue

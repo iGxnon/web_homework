@@ -1,15 +1,50 @@
 package main
 
 import (
+	"context"
+	"homework15/level01-02/chat_server"
 	"homework15/level01-02/ws_parser"
 	"homework15/level01-02/ws_upgrader"
 	"log"
 	"net/http"
+	"strconv"
+	"sync/atomic"
 	"time"
 )
 
+var id int64
+
 func main() {
-	test()
+	chatRoom()
+}
+
+func chatRoom() {
+	server := chat_server.NewServer()
+	ctx, can := context.WithCancel(context.Background())
+	defer can()
+	go server.ServeWithContext(ctx)
+
+	mux := http.NewServeMux()
+	updater := ws_upgrader.NewUpgrader(ws_upgrader.DefaultPingHandle, ws_upgrader.AllOriginOption)
+	mux.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		conn, err := updater.Update(w, r)
+		log.Println(conn, err)
+		client := &chat_server.Client{
+			ID:      uid(),
+			Conn:    conn,
+			Send:    make(chan []byte),
+			Manager: server,
+		}
+		server.Register <- client
+		go client.ListenRead()
+		go client.ListenWrite()
+	})
+	log.Fatal(http.ListenAndServe(":8080", mux))
+}
+
+func uid() string {
+	atomic.AddInt64(&id, 1)
+	return strconv.Itoa(int(id))
 }
 
 func test() {
