@@ -8,9 +8,9 @@ import (
 )
 
 type ClientManager struct {
-	mu      *sync.RWMutex // keep write safe
-	Clients map[*Client]struct{}
+	mu *sync.RWMutex // keep write safe
 
+	Clients   map[*Client]struct{}
 	ClientMap map[string]*Client
 
 	Broadcast  chan Message
